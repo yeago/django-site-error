@@ -16,19 +16,19 @@ class SiteError(models.Model):
 	resolved = models.BooleanField(default=False)
 	querystring = models.TextField(null=True,blank=True)
 	user_subscribers = models.ManyToManyField('auth.User',blank=True)
-	email_subscribers = models.ManyToManyField('site_errors.SiteSubscriber',blank=True)
+	email_subscribers = models.ManyToManyField('django_site_errors.SiteSubscriber',blank=True)
 	notification_done = models.BooleanField(default=False,editable=False)
 	def notify_and_resolve(self):
 		site = Site.objects.get_current()
 
 		email_context = {'site_url': site.domain, 'problem_url': self.url, 'problem_querystring': None}
 
-		subject_template = get_template('site_errors/email_subject.txt')
+		subject_template = get_template('django_site_errors/email_subject.txt')
 		subject = subject_template.render(Context(email_context))
 		subscribers = Set(self.user_subscribers.values_list('email',flat=True).distinct()).union(\
 				Set(self.email_subscribers.values_list('email',flat=True).distinct()))
 
-		body_template = get_template('site_errors/email_body.txt')
+		body_template = get_template('django_site_errors/email_body.txt')
 		body = body_template.render(Context(email_context))
 
 		for i in subscribers:

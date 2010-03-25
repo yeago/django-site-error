@@ -1,0 +1,3 @@
+You are receiving this email because you wished to be notified about the problem at the url below.
+
+http://{{ site_url }}{{ problem_url }}{% if problem_querystring %}?{{ problem_querystring }}{% endif %}
