@@ -19,3 +19,8 @@ class SiteErrorRouter(object):
 			return False
 
 		return None
+
+	def allow_relation(self, obj1, obj2, **hints):
+		if obj1._meta.app_label == 'django_site_errors' or obj2._meta.app_label == 'django_site_errors':
+			return True
+		return None
