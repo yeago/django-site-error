@@ -15,7 +15,6 @@ class SiteError(models.Model):
 	date_added = models.DateTimeField()
 	resolved = models.BooleanField(default=False)
 	querystring = models.TextField(null=True,blank=True)
-	user_subscribers = models.ManyToManyField('auth.User',blank=True)
 	email_subscribers = models.ManyToManyField('django_site_errors.SiteSubscriber',blank=True)
 	notification_done = models.BooleanField(default=False,editable=False)
 	def notify_and_resolve(self):
@@ -25,8 +24,7 @@ class SiteError(models.Model):
 
 		subject_template = get_template('django_site_errors/email_subject.txt')
 		subject = subject_template.render(Context(email_context))
-		subscribers = Set(self.user_subscribers.values_list('email',flat=True).distinct()).union(\
-				Set(self.email_subscribers.values_list('email',flat=True).distinct()))
+		subscribers = Set(self.email_subscribers.values_list('email',flat=True).distinct())
 
 		body_template = get_template('django_site_errors/email_body.txt')
 		body = body_template.render(Context(email_context))
